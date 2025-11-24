@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UserCreateForm } from './features/users/components/user-create-form/user-create-form';
+import { RegisterForm } from './features/auth/components/register-form/register-form';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, UserCreateForm],
+  imports: [RouterOutlet, RegisterForm],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

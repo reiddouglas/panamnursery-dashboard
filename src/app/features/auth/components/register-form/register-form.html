@@ -1,0 +1,10 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <label for="name">Name</label>
+  <input id="name" type="text" formControlName="name" />
+  <button type="submit" [disabled]="!registerForm.valid">Submit</button>
+  @if (registerForm.touched && registerForm.invalid) {
+    <div>
+      <span>Name is required</span>
+    </div>
+  }
+</form>

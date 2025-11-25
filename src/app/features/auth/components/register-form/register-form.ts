@@ -38,11 +38,11 @@ export class RegisterForm {
     confirmPassword: 'Confirm Password',
   };
 
-  submitInvalidFlags: { [key: string]: boolean } = {};
+  submitInvalidFlags: Record<string, boolean> = {};
   userApiService = inject(UserApiService);
   errors: string[] = [];
   passwordErrors: string[] = [];
-  loading: boolean = false;
+  loading = false;
 
   clearSubmitError(controlName: string) {
     this.submitInvalidFlags[controlName] = false;
@@ -117,12 +117,14 @@ export class RegisterForm {
                 this.errors.push('Phone number must contain only digits');
                 break;
               case 'minlength':
-                const min = errors['minlength'].requiredLength;
-                this.errors.push(`Phone number must be at least ${min} digits`);
+                this.errors.push(
+                  `Phone number must be at least ${errors['minlength'].requiredLength} digits`,
+                );
                 break;
               case 'maxlength':
-                const max = errors['maxlength'].requiredLength;
-                this.errors.push(`Phone number must be at most ${max} digits`);
+                this.errors.push(
+                  `Phone number must be at most ${errors['maxlength'].requiredLength} digits`,
+                );
                 break;
               default:
                 this.errors.push('Invalid phone number');

@@ -15,13 +15,17 @@ export class LoginForm {
     password: new FormControl<string>('', [Validators.required]),
   });
 
+  displayNames: Record<string, string> = UserLoginDTO.getAllDisplayNames();
+
   userApiService = inject(UserApiService);
+  errors: string[] = [];
 
   onSubmit() {
+    this.errors = [];
     if (this.loginForm.valid) {
       const userLoginDTO = new UserLoginDTO(
-        this.loginForm.value.username!,
-        this.loginForm.value.password!,
+        this.loginForm.value.username!.trim(),
+        this.loginForm.value.password!.trim(),
       );
       this.userApiService.loginUser(userLoginDTO).subscribe({
         next: (result) => {
@@ -31,6 +35,17 @@ export class LoginForm {
           console.error('Error logging user in', error);
         },
       });
+    } else {
+      // Required field errors
+      const requiredMissing: string[] = [];
+      Object.keys(this.loginForm.controls).forEach((key) => {
+        if (this.loginForm.get(key)?.hasError('required')) {
+          requiredMissing.push(this.displayNames[key] ?? key);
+        }
+      });
+      if (requiredMissing.length > 0) {
+        this.errors.push(`Missing required fields: ${requiredMissing.join(', ')}`);
+      }
     }
   }
 }

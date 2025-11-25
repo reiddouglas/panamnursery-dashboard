@@ -10,9 +10,9 @@
       <input id="password" type="text" formControlName="password" />
     </div>
     <button type="submit" class="btn-primary w-full">Log In</button>
-    @if (loginForm.touched && loginForm.invalid) {
+    @for (error of errors; track error) {
       <div class="form-error w-full text-center">
-        <span>Username and Password are required</span>
+        <span>{{ error }}</span>
       </div>
     }
   </form>

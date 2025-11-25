@@ -3,11 +3,29 @@
     <h1>Log In</h1>
     <div class="form-field form-col">
       <label class="form-label" for="username">Username</label>
-      <input id="username" type="text" formControlName="username" />
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        (input)="clearSubmitError('username')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('username'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('username'),
+        }"
+      />
     </div>
     <div class="form-field form-col">
       <label class="form-label" for="password">Password</label>
-      <input id="password" type="text" formControlName="password" />
+      <input
+        id="password"
+        type="text"
+        formControlName="password"
+        (input)="clearSubmitError('password')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('password'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('password'),
+        }"
+      />
     </div>
     <button type="submit" class="btn-primary w-full">Log In</button>
     @for (error of errors; track error) {

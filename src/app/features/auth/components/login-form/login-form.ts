@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { UserApiService } from '../../services/user-api-service';
 import { UserLoginDTO } from '../../models/user-login.dto';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-login-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: './login-form.html',
   styleUrl: './login-form.css',
 })
@@ -15,13 +16,29 @@ export class LoginForm {
     password: new FormControl<string>('', [Validators.required]),
   });
 
+  submitInvalidFlags: { [key: string]: boolean } = {};
   displayNames: Record<string, string> = UserLoginDTO.getAllDisplayNames();
 
   userApiService = inject(UserApiService);
   errors: string[] = [];
+  submitted: boolean = false;
+
+  clearSubmitError(controlName: string) {
+    this.submitInvalidFlags[controlName] = false;
+  }
+
+  showRedGlow(controlName: string): boolean {
+    return !!this.submitInvalidFlags[controlName];
+  }
 
   onSubmit() {
     this.errors = [];
+    Object.keys(this.loginForm.controls).forEach((key) => {
+      const control = this.loginForm.get(key);
+      if (control && control.invalid) {
+        this.submitInvalidFlags[key] = true; // set flag only if invalid
+      }
+    });
     if (this.loginForm.valid) {
       const userLoginDTO = new UserLoginDTO(
         this.loginForm.value.username!.trim(),

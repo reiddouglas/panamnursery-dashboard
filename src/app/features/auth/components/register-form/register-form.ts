@@ -2,39 +2,55 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { UserCreateDTO } from '../../models/user-create.dto';
 import { UserApiService } from '../../services/user-api-service';
-import { passwordComplexityValidator } from '../../../../shared/validators/password-validator';
+import { passwordComplexityValidator } from '../../../../shared/validators/password-complexity-validator';
+import { NgClass } from '@angular/common';
+import { passwordMatchValidator } from '../../../../shared/validators/password-match-validator';
 
 @Component({
   selector: 'app-register-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: './register-form.html',
   styleUrl: './register-form.css',
 })
 export class RegisterForm {
-  registerForm = new FormGroup({
-    firstName: new FormControl<string>('', [Validators.required]),
-    lastName: new FormControl<string>('', [Validators.required]),
-    email: new FormControl<string>('', [Validators.required, Validators.email]),
-    phone: new FormControl<number | null>(null, [
-      Validators.required,
-      Validators.pattern(/^\d+$/),
-      Validators.minLength(10),
-      Validators.maxLength(15),
-    ]),
-    username: new FormControl<string>('', [Validators.required]),
-    password: new FormControl<string>('', [Validators.required, passwordComplexityValidator()]),
-    confirmPassword: new FormControl<string>('', [Validators.required]),
-  });
+  registerForm = new FormGroup(
+    {
+      firstName: new FormControl<string>('', [Validators.required]),
+      lastName: new FormControl<string>('', [Validators.required]),
+      email: new FormControl<string>('', [Validators.required, Validators.email]),
+      phone: new FormControl<number | null>(null, [
+        Validators.required,
+        Validators.pattern(/^\d+$/),
+        Validators.minLength(10),
+        Validators.maxLength(15),
+      ]),
+      username: new FormControl<string>('', [Validators.required]),
+      password: new FormControl<string>('', [Validators.required, passwordComplexityValidator()]),
+      confirmPassword: new FormControl<string>('', [Validators.required]),
+    },
+    {
+      validators: passwordMatchValidator('password', 'confirmPassword'),
+    },
+  );
 
   displayNames: Record<string, string> = {
     ...UserCreateDTO.getAllDisplayNames(),
     confirmPassword: 'Confirm Password',
   };
 
+  submitInvalidFlags: { [key: string]: boolean } = {};
   userApiService = inject(UserApiService);
   errors: string[] = [];
   passwordErrors: string[] = [];
   loading: boolean = false;
+
+  clearSubmitError(controlName: string) {
+    this.submitInvalidFlags[controlName] = false;
+  }
+
+  showRedGlow(controlName: string): boolean {
+    return !!this.submitInvalidFlags[controlName];
+  }
 
   allowNumbersOnly(event: KeyboardEvent) {
     const char = event.key;
@@ -46,6 +62,12 @@ export class RegisterForm {
   onSubmit() {
     this.errors = [];
     this.passwordErrors = [];
+    Object.keys(this.registerForm.controls).forEach((key) => {
+      const control = this.registerForm.get(key);
+      if (control && control.invalid) {
+        this.submitInvalidFlags[key] = true; // set flag only if invalid
+      }
+    });
     if (
       !this.loading &&
       this.registerForm.valid &&
@@ -59,7 +81,6 @@ export class RegisterForm {
         this.registerForm.value.username!.trim(),
         this.registerForm.value.password!.trim(),
       );
-      this.loading = true;
       this.userApiService.createUser(userCreateDTO).subscribe({
         next: (result) => {
           console.log('User created', result);
@@ -68,7 +89,6 @@ export class RegisterForm {
           console.error('Error creating user', error);
         },
       });
-      this.loading = false;
     } else {
       // Required field errors
       const requiredMissing: string[] = [];
@@ -94,18 +114,18 @@ export class RegisterForm {
           Object.keys(errors).forEach((errorKey) => {
             switch (errorKey) {
               case 'pattern':
-                this.errors.push('Phone number must contain only digits.');
+                this.errors.push('Phone number must contain only digits');
                 break;
               case 'minlength':
                 const min = errors['minlength'].requiredLength;
-                this.errors.push(`Phone number must be at least ${min} digits.`);
+                this.errors.push(`Phone number must be at least ${min} digits`);
                 break;
               case 'maxlength':
                 const max = errors['maxlength'].requiredLength;
-                this.errors.push(`Phone number must be at most ${max} digits.`);
+                this.errors.push(`Phone number must be at most ${max} digits`);
                 break;
               default:
-                this.errors.push('Invalid phone number.');
+                this.errors.push('Invalid phone number');
             }
           });
         }
@@ -142,12 +162,8 @@ export class RegisterForm {
       }
 
       // Password confirm errors
-      if (
-        this.registerForm.value.password != this.registerForm.value.confirmPassword &&
-        this.registerForm.value.password != '' &&
-        this.registerForm.value.confirmPassword != ''
-      ) {
-        this.errors.push('Passwords do not match');
+      if (this.registerForm.get('confirmPassword')?.hasError('passwordsMismatch')) {
+        this.passwordErrors.push('Passwords do not match');
       }
     }
   }

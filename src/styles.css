@@ -1,3 +1,98 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
 
-@import "tailwindcss";
+@theme {
+  --color-primary: #2e7d32;
+  --color-secondary: #5d4037;
+  --color-accent: #0288d1;
+
+  --color-bg: #f1f8e9;
+  --color-bg-secondary: #e8f5e9;
+
+  --color-text: #1b1b1b;
+  --color-muted: #6b7280;
+
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  --font-display: 'Inter', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text font-display;
+  }
+
+  h1 {
+    @apply text-4xl font-bold text-primary tracking-tight;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold text-secondary tracking-tight;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold text-text;
+  }
+
+  h4 {
+    @apply text-xl font-medium text-text;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply border border-secondary/30 
+           rounded-md px-3 py-2 
+           bg-bg-secondary 
+           text-text
+           focus:outline-none 
+           focus:ring-2 focus:ring-primary/60;
+  }
+
+  button {
+    @apply px-4 py-2 rounded-lg font-medium
+           bg-primary text-white
+           hover:bg-primary/80
+           active:bg-primary/90
+           disabled:opacity-50;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white 
+           px-4 py-2 rounded-lg font-semibold
+           hover:bg-primary/80
+           active:bg-primary/90;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary/20 text-secondary
+           px-4 py-2 rounded-lg font-medium
+           hover:bg-secondary/30;
+  }
+
+  .form-container {
+    @apply w-full max-w-lg bg-bg-secondary p-8 rounded-lg shadow-md flex flex-col items-center gap-6;
+  }
+
+  .form-row {
+    @apply flex flex-row flex-wrap gap-4 w-full;
+  }
+
+  .form-col {
+    @apply flex-1 min-w-[150px];
+  }
+
+  .form-field {
+    @apply flex flex-col gap-1 w-full;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-muted;
+  }
+
+  .form-error {
+    @apply text-sm text-red-600 mt-1;
+  }
+}

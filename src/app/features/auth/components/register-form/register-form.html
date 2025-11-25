@@ -1,0 +1,111 @@
+<div class="w-full flex justify-center py-10">
+  <form class="form-container" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <h1>Register</h1>
+    <div class="form-row">
+      <div class="form-field form-col">
+        <label class="form-label" for="first-name">First Name</label>
+        <input
+          id="first-name"
+          type="text"
+          formControlName="firstName"
+          (input)="clearSubmitError('firstName')"
+          [ngClass]="{
+            'border-gray-300': !showRedGlow('firstName'),
+            'border-red-500 ring-2 ring-red-500': showRedGlow('firstName'),
+          }"
+        />
+      </div>
+      <div class="form-field form-col">
+        <label class="form-label" for="last-name">Last Name</label>
+        <input
+          id="last-name"
+          type="text"
+          formControlName="lastName"
+          (input)="clearSubmitError('lastName')"
+          [ngClass]="{
+            'border-gray-300': !showRedGlow('lastName'),
+            'border-red-500 ring-2 ring-red-500': showRedGlow('lastName'),
+          }"
+        />
+      </div>
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        (input)="clearSubmitError('email')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('email'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('email'),
+        }"
+      />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="phone">Phone</label>
+      <input
+        id="phone"
+        type="tel"
+        (keypress)="allowNumbersOnly($event)"
+        formControlName="phone"
+        (input)="clearSubmitError('phone')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('phone'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('phone'),
+        }"
+      />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="username">Username</label>
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        (input)="clearSubmitError('username')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('username'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('username'),
+        }"
+      />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        (input)="clearSubmitError('password')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('password'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('password'),
+        }"
+      />
+      @for (error of passwordErrors; track error) {
+        <div class="form-error w-full text-left">
+          <span>{{ error }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="form-field form-col">
+      <label class="form-label" for="confirm-password">Confirm Password</label>
+      <input
+        id="confirm-password"
+        type="password"
+        formControlName="confirmPassword"
+        (input)="clearSubmitError('confirmPassword')"
+        [ngClass]="{
+          'border-gray-300': !showRedGlow('confirmPassword'),
+          'border-red-500 ring-2 ring-red-500': showRedGlow('confirmPassword'),
+        }"
+      />
+    </div>
+    <button type="submit" class="btn-primary w-full">Submit</button>
+    @for (error of errors; track error) {
+      <div class="form-error w-full text-center">
+        <span>{{ error }}</span>
+      </div>
+    }
+  </form>
+</div>

@@ -4,17 +4,43 @@
     <div class="form-row">
       <div class="form-field form-col">
         <label class="form-label" for="first-name">First Name</label>
-        <input id="first-name" type="text" formControlName="name" />
+        <input id="first-name" type="text" formControlName="firstName" />
       </div>
       <div class="form-field form-col">
         <label class="form-label" for="last-name">Last Name</label>
-        <input id="last-name" type="text" />
+        <input id="last-name" type="text" formControlName="lastName" />
       </div>
     </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="phone">Phone</label>
+      <input id="phone" type="tel" (keypress)="allowNumbersOnly($event)" formControlName="phone" />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="username">Username</label>
+      <input id="username" type="text" formControlName="username" />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="password">Password</label>
+      <input id="password" type="password" formControlName="password" />
+      @for (error of passwordErrors; track error) {
+        <div class="form-error w-full text-left">
+          <span>{{ error }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="form-field form-col">
+      <label class="form-label" for="confirm-password">Confirm Password</label>
+      <input id="confirm-password" type="password" formControlName="confirmPassword" />
+    </div>
     <button type="submit" class="btn-primary w-full">Submit</button>
-    @if (registerForm.touched && registerForm.invalid) {
+    @for (error of errors; track error) {
       <div class="form-error w-full text-center">
-        <span>Name is required</span>
+        <span>{{ error }}</span>
       </div>
     }
   </form>

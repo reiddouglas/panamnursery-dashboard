@@ -16,12 +16,12 @@ export class LoginForm {
     password: new FormControl<string>('', [Validators.required]),
   });
 
-  submitInvalidFlags: { [key: string]: boolean } = {};
+  submitInvalidFlags: Record<string, boolean> = {};
   displayNames: Record<string, string> = UserLoginDTO.getAllDisplayNames();
 
   userApiService = inject(UserApiService);
   errors: string[] = [];
-  submitted: boolean = false;
+  submitted = false;
 
   clearSubmitError(controlName: string) {
     this.submitInvalidFlags[controlName] = false;

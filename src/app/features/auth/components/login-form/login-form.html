@@ -1,0 +1,19 @@
+<div class="w-full flex justify-center py-10">
+  <form class="form-container" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h1>Log In</h1>
+    <div class="form-field form-col">
+      <label class="form-label" for="username">Username</label>
+      <input id="username" type="text" formControlName="username" />
+    </div>
+    <div class="form-field form-col">
+      <label class="form-label" for="password">Password</label>
+      <input id="password" type="text" formControlName="password" />
+    </div>
+    <button type="submit" class="btn-primary w-full">Log In</button>
+    @if (loginForm.touched && loginForm.invalid) {
+      <div class="form-error w-full text-center">
+        <span>Username and Password are required</span>
+      </div>
+    }
+  </form>
+</div>
